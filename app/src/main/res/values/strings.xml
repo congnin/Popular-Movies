@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Popular-Movies</string>
+    <string name="movie_image_desc">Movie image</string>
+    <string name="url_for_downloading_poster">http://image.tmdb.org/t/p/w342</string>
+    <string name="url_for_downloading_backdrop">http://image.tmdb.org/t/p/original</string>
+
+    <string name="release_date_missing">Release date is unknown</string>
+    <string name="movie_item_btn_favorite_desc">Save to favorites</string>
 </resources>
