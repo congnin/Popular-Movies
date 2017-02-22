@@ -23,7 +23,7 @@
     </style>
 
     <style name="MovieItemFooter">
-        <item name="android:background">@color/theme_primary</item>
+        <item name="android:background">@color/colorPrimary</item>
     </style>
 
     <style name="MovieItemText">
@@ -38,7 +38,6 @@
     <style name="FavoriteButton" parent="Widget.AppCompat.Light.ActionButton">
         <item name="android:layout_height">@dimen/abc_action_button_min_height_material</item>
         <item name="android:layout_width">@dimen/abc_action_button_min_height_material</item>
-        <item name="android:src">@drawable/selector_favorite_button</item>
     </style>
 
 </resources>

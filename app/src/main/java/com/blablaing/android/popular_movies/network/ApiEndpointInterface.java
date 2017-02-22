@@ -11,7 +11,7 @@ import retrofit2.http.Query;
  * Created by congnc on 2/21/17.
  */
 
-public interface API {
+public interface ApiEndpointInterface {
     @GET("3/movie/{sort_by}")
     Call<Movies> getMoviesBySort(@Path("sort_by") String sortBy, @Query("api_key") String apiKey);
 }
