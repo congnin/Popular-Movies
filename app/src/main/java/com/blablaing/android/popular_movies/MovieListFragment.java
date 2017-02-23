@@ -1,6 +1,7 @@
 package com.blablaing.android.popular_movies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -166,7 +167,9 @@ public class MovieListFragment extends Fragment implements FetchMovieTask.Callba
 
     @Override
     public void open(Movie movie, int position) {
-
+        Intent intent = new Intent(getActivity(), DetailActivity.class);
+        intent.putExtra(DetailFragment.ARG_MOVIE, movie);
+        startActivity(intent);
     }
 
     @Override
