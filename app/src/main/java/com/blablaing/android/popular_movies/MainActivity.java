@@ -6,7 +6,6 @@ import android.support.v7.widget.Toolbar;
 
 import com.blablaing.android.popular_movies.sync.FetchMovieTask;
 
-import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
     }
 
 

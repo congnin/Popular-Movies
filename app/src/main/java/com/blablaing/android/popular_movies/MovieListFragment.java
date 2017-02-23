@@ -1,16 +1,16 @@
 package com.blablaing.android.popular_movies;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,8 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
+import com.blablaing.android.popular_movies.adapter.MovieListAdapter;
 import com.blablaing.android.popular_movies.data.MovieContract;
 import com.blablaing.android.popular_movies.model.Movie;
 import com.blablaing.android.popular_movies.network.Command;
@@ -38,7 +38,7 @@ public class MovieListFragment extends Fragment implements FetchMovieTask.Callba
     private static final String EXTRA_MOVIES = "EXTRA_MOVIES";
     private static final String EXTRA_SORT_BY = "EXTRA_SORT_BY";
     private static final int FAVORITE_MOVIES_LOADER = 0;
-
+    private Toolbar toolbar;
     private MovieListAdapter movieAdapter;
     private RecyclerView mRecyclerView;
     private String mSortBy = FetchMovieTask.MOST_POPULAR;
@@ -47,6 +47,7 @@ public class MovieListFragment extends Fragment implements FetchMovieTask.Callba
     private ProgressBar progressBar;
     private boolean mPaused = false;
     private Command mWaitingCommand = null;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,12 +63,17 @@ public class MovieListFragment extends Fragment implements FetchMovieTask.Callba
         emptyViewConnection = rootView.findViewById(R.id.empty_state_container);
         emptyViewFavorites = rootView.findViewById(R.id.empty_state_favorites_container);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progress);
+        toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.setSupportActionBar(toolbar);
         return rootView;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        toolbar.setTitle(R.string.title_movie_list);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),
+                getActivity().getResources().getInteger(R.integer.grid_number_cols)));
         movieAdapter = new MovieListAdapter(new ArrayList<Movie>(), this);
         mRecyclerView.setAdapter(movieAdapter);
 

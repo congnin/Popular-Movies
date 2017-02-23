@@ -1,4 +1,4 @@
-package com.blablaing.android.popular_movies;
+package com.blablaing.android.popular_movies.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,10 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.blablaing.android.popular_movies.R;
 import com.blablaing.android.popular_movies.data.MovieContract;
 import com.blablaing.android.popular_movies.model.Movie;
 import com.blablaing.android.popular_movies.ui.AspectLockedImageView;
-import com.squareup.picasso.Callback;
+import com.github.florent37.picassopalette.PicassoPalette;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -55,12 +56,6 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     }
 
     @Override
-    public void onViewRecycled(ViewHolder holder) {
-        super.onViewRecycled(holder);
-        holder.cleanUp();
-    }
-
-    @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Movie movie = mMovies.get(position);
         final Context context = holder.mView.getContext();
@@ -74,21 +69,12 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
                 .load(posterUrl)
                 .config(Bitmap.Config.RGB_565)
                 .into(holder.mThumbnailView,
-                        new Callback() {
-                            @Override
-                            public void onSuccess() {
-                                if(holder.mMovie.getId() != movie.getId()){
-                                    holder.cleanUp();
-                                }else{
-                                    holder.mThumbnailView.setVisibility(View.VISIBLE);
-                                }
-                            }
-
-                            @Override
-                            public void onError() {
-
-                            }
-                        });
+                        PicassoPalette.with(posterUrl.toString(), holder.mThumbnailView)
+                                .use(PicassoPalette.Profile.VIBRANT)
+                                .intoBackground(holder.mFooter,
+                                        PicassoPalette.Swatch.RGB)
+                                .intoTextColor(holder.mTitleView,
+                                        PicassoPalette.Swatch.TITLE_TEXT_COLOR));
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

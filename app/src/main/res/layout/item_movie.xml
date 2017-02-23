@@ -8,10 +8,9 @@
     android:layout_height="wrap_content"
     tools:layout_margin="@dimen/item_spacing_full">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <com.blablaing.android.popular_movies.ui.AspectLockedImageView
             android:id="@+id/movie_item_image"
@@ -31,6 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:background="@color/colorPrimary"
+            android:layout_alignParentBottom="true"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -65,5 +65,5 @@
                 style="@style/FavoriteButton"
                 android:contentDescription="@string/movie_item_btn_favorite_desc" />
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 </android.support.v7.widget.CardView>
