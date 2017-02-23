@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.blablaing.android.popular_movies.data.MovieContract;
 import com.blablaing.android.popular_movies.model.Movie;
 import com.blablaing.android.popular_movies.network.Command;
 import com.blablaing.android.popular_movies.sync.FetchMovieTask;
@@ -32,10 +33,12 @@ import java.util.List;
  */
 
 public class MovieListFragment extends Fragment implements FetchMovieTask.CallbackLoadMovie,
-        MovieListAdapter.Callbacks {
+        MovieListAdapter.Callbacks, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String EXTRA_MOVIES = "EXTRA_MOVIES";
     private static final String EXTRA_SORT_BY = "EXTRA_SORT_BY";
+    private static final int FAVORITE_MOVIES_LOADER = 0;
+
     private MovieListAdapter movieAdapter;
     private RecyclerView mRecyclerView;
     private String mSortBy = FetchMovieTask.MOST_POPULAR;
@@ -74,6 +77,10 @@ public class MovieListFragment extends Fragment implements FetchMovieTask.Callba
                 List<Movie> movies = savedInstanceState.getParcelableArrayList(EXTRA_MOVIES);
                 movieAdapter.add(movies);
                 progressBar.setVisibility(View.GONE);
+
+                if (mSortBy.equals(FetchMovieTask.FAVORITES)) {
+                    getActivity().getSupportLoaderManager().initLoader(FAVORITE_MOVIES_LOADER, null, this);
+                }
             }
             updateEmptyState();
         } else {
@@ -90,6 +97,10 @@ public class MovieListFragment extends Fragment implements FetchMovieTask.Callba
             outState.putParcelableArrayList(EXTRA_MOVIES, movies);
         }
         outState.putString(EXTRA_SORT_BY, mSortBy);
+
+        if (!mSortBy.equals(FetchMovieTask.FAVORITES)) {
+            getActivity().getSupportLoaderManager().destroyLoader(FAVORITE_MOVIES_LOADER);
+        }
     }
 
     @Override
@@ -127,14 +138,27 @@ public class MovieListFragment extends Fragment implements FetchMovieTask.Callba
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sort_by_most_popular:
+                if (mSortBy.equals(FetchMovieTask.FAVORITES)) {
+                    getActivity().getSupportLoaderManager().destroyLoader(FAVORITE_MOVIES_LOADER);
+                }
                 mSortBy = FetchMovieTask.MOST_POPULAR;
                 fetchMovies(mSortBy);
                 item.setChecked(true);
                 break;
             case R.id.sort_by_top_rated:
+                if (mSortBy.equals(FetchMovieTask.FAVORITES)) {
+                    getActivity().getSupportLoaderManager().destroyLoader(FAVORITE_MOVIES_LOADER);
+                }
                 mSortBy = FetchMovieTask.TOP_RATED;
                 fetchMovies(mSortBy);
                 item.setChecked(true);
+                break;
+            case R.id.sort_by_favorites:
+                mSortBy = FetchMovieTask.FAVORITES;
+                item.setChecked(true);
+                fetchMovies(mSortBy);
+                break;
+            default:
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -146,6 +170,8 @@ public class MovieListFragment extends Fragment implements FetchMovieTask.Callba
             FetchMovieTask.NotifyAboutTaskCompletionCommand command =
                     new FetchMovieTask.NotifyAboutTaskCompletionCommand(this);
             new FetchMovieTask(sortBy, command).execute();
+        } else {
+            getActivity().getSupportLoaderManager().initLoader(FAVORITE_MOVIES_LOADER, null, this);
         }
     }
 
@@ -190,6 +216,29 @@ public class MovieListFragment extends Fragment implements FetchMovieTask.Callba
 
     @Override
     public void onFetchError(Command command) {
+
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        progressBar.setVisibility(View.VISIBLE);
+        return new CursorLoader(getActivity(),
+                MovieContract.MovieEntry.CONTENT_URI,
+                MovieContract.MovieEntry.MOVIE_COLUMNS,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        movieAdapter.addCursor(data);
+        updateEmptyState();
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
 
     }
 }
