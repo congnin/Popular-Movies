@@ -27,7 +27,8 @@ public class Movie implements Parcelable {
 
     @SerializedName("genre_ids")
     List<Integer> genreIds = new ArrayList<>();
-
+    @SerializedName("adult")
+    private Boolean mAdult;
     @SerializedName("original_title")
     private String mTitle;
     @SerializedName("poster_path")
@@ -40,19 +41,12 @@ public class Movie implements Parcelable {
     private String mReleaseDate;
     @SerializedName("backdrop_path")
     private String mBackdrop;
+    @SerializedName("popularity")
+    private Double mPopularity;
+    @SerializedName("vote_count")
+    private Integer mVoteCount;
 
     private Movie() {
-    }
-
-    public Movie(long id, String title, String poster, String overview, String userRating,
-                 String releaseDate, String backdrop) {
-        mId = id;
-        mTitle = title;
-        mPoster = poster;
-        mOverview = overview;
-        mUserRating = userRating;
-        mReleaseDate = releaseDate;
-        mBackdrop = backdrop;
     }
 
     public String getTitle() {
@@ -115,39 +109,115 @@ public class Movie implements Parcelable {
         return null;
     }
 
+    public Boolean getAdult() {
+        return mAdult;
+    }
+
     public String getBackdrop() {
         return mBackdrop;
     }
 
-    public static final Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
-        public Movie createFromParcel(Parcel source) {
-            Movie movie = new Movie();
-            movie.mId = source.readLong();
-            movie.mTitle = source.readString();
-            movie.mPoster = source.readString();
-            movie.mOverview = source.readString();
-            movie.mUserRating = source.readString();
-            movie.mReleaseDate = source.readString();
-            movie.mBackdrop = source.readString();
-            return movie;
-        }
+    public List<Integer> getGenreIds() {
+        return genreIds;
+    }
 
-        public Movie[] newArray(int size) {
-            return new Movie[size];
-        }
-    };
+    public Double getPopularity() {
+        return mPopularity;
+    }
 
+    public Integer getVoteCount() {
+        return mVoteCount;
+    }
+
+    public void setId(long mId) {
+        this.mId = mId;
+    }
+
+    public void setGenreIds(List<Integer> genreIds) {
+        this.genreIds = genreIds;
+    }
+
+    public void setTitle(String mTitle) {
+        this.mTitle = mTitle;
+    }
+
+    public void setPoster(String mPoster) {
+        this.mPoster = mPoster;
+    }
+
+    public void setOverview(String mOverview) {
+        this.mOverview = mOverview;
+    }
+
+    public void setUserRating(String mUserRating) {
+        this.mUserRating = mUserRating;
+    }
+
+    public void setReleaseDate(String mReleaseDate) {
+        this.mReleaseDate = mReleaseDate;
+    }
+
+    public void setBackdrop(String mBackdrop) {
+        this.mBackdrop = mBackdrop;
+    }
+
+    public void setPopularity(Double mPopularity) {
+        this.mPopularity = mPopularity;
+    }
+
+    public void setVoteCount(Integer mVoteCount) {
+        this.mVoteCount = mVoteCount;
+    }
+
+    public void setAdult(Boolean mAdult) {
+        this.mAdult = mAdult;
+    }
+
+
+    @Override
     public int describeContents() {
         return 0;
     }
 
-    public void writeToParcel(Parcel parcel, int flags) {
-        parcel.writeLong(mId);
-        parcel.writeString(mTitle);
-        parcel.writeString(mPoster);
-        parcel.writeString(mOverview);
-        parcel.writeString(mUserRating);
-        parcel.writeString(mReleaseDate);
-        parcel.writeString(mBackdrop);
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.mId);
+        dest.writeList(this.genreIds);
+        dest.writeValue(this.mAdult);
+        dest.writeString(this.mTitle);
+        dest.writeString(this.mPoster);
+        dest.writeString(this.mOverview);
+        dest.writeString(this.mUserRating);
+        dest.writeString(this.mReleaseDate);
+        dest.writeString(this.mBackdrop);
+        dest.writeValue(this.mPopularity);
+        dest.writeValue(this.mVoteCount);
     }
+
+    protected Movie(Parcel in) {
+        this.mId = in.readLong();
+        this.genreIds = new ArrayList<Integer>();
+        in.readList(this.genreIds, Integer.class.getClassLoader());
+        this.mAdult = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.mTitle = in.readString();
+        this.mPoster = in.readString();
+        this.mOverview = in.readString();
+        this.mUserRating = in.readString();
+        this.mReleaseDate = in.readString();
+        this.mBackdrop = in.readString();
+        this.mPopularity = (Double) in.readValue(Double.class.getClassLoader());
+        this.mVoteCount = (Integer) in.readValue(Integer.class.getClassLoader());
+    }
+
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel source) {
+            return new Movie(source);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }

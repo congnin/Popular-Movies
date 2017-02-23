@@ -5,7 +5,7 @@
     android:id="@+id/movie_item_container"
     style="@style/MovieItem"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:layout_margin="@dimen/item_spacing_full">
 
     <LinearLayout

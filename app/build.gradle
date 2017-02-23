@@ -17,6 +17,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    buildTypes.each {
+        it.buildConfigField 'String', 'THE_MOVIE_DATABASE_API_KEY', '"3cc91d496a0b7cf338fafae2c567ffd7"'
+    }
 }
 
 dependencies {
@@ -35,4 +39,7 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.0.0'
     compile 'com.squareup.retrofit2:converter-gson:2.0.0'
     compile 'com.android.support:support-annotations:22.2.0'
+    compile 'com.android.support:palette-v7:25.1.1'
+    compile 'com.github.bumptech.glide:glide:3.6.1'
+    compile 'com.github.florent37:glidepalette:1.0.2@aar'
 }
