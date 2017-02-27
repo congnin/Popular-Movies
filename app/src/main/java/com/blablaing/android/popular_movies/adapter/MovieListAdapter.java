@@ -69,7 +69,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
                 .load(posterUrl)
                 .config(Bitmap.Config.RGB_565)
                 .into(holder.mThumbnailView,
-                        PicassoPalette.with(posterUrl.toString(), holder.mThumbnailView)
+                        PicassoPalette.with(posterUrl, holder.mThumbnailView)
                                 .use(PicassoPalette.Profile.VIBRANT)
                                 .intoBackground(holder.mFooter,
                                         PicassoPalette.Swatch.RGB)
@@ -144,5 +144,8 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
         return mMovies;
     }
 
-
+    public void clear() {
+        mMovies.clear();
+        notifyDataSetChanged();
+    }
 }

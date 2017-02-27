@@ -3,7 +3,9 @@ package com.blablaing.android.popular_movies;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -24,6 +26,7 @@ import com.blablaing.android.popular_movies.data.MovieContract;
 import com.blablaing.android.popular_movies.model.Movie;
 import com.blablaing.android.popular_movies.network.Command;
 import com.blablaing.android.popular_movies.sync.FetchMovieTask;
+import com.blablaing.android.popular_movies.ui.RecycleViewLoadMore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +36,7 @@ import java.util.List;
  */
 
 public class MovieListFragment extends Fragment implements FetchMovieTask.CallbackLoadMovie,
-        MovieListAdapter.Callbacks, LoaderManager.LoaderCallbacks<Cursor> {
+        MovieListAdapter.Callbacks, LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final String EXTRA_MOVIES = "EXTRA_MOVIES";
     private static final String EXTRA_SORT_BY = "EXTRA_SORT_BY";
@@ -66,6 +69,7 @@ public class MovieListFragment extends Fragment implements FetchMovieTask.Callba
         toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.setSupportActionBar(toolbar);
+
         return rootView;
     }
 
@@ -74,6 +78,8 @@ public class MovieListFragment extends Fragment implements FetchMovieTask.Callba
         toolbar.setTitle(R.string.title_movie_list);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),
                 getActivity().getResources().getInteger(R.integer.grid_number_cols)));
+
+        mRecyclerView.setHasFixedSize(true);
         movieAdapter = new MovieListAdapter(new ArrayList<Movie>(), this);
         mRecyclerView.setAdapter(movieAdapter);
 
@@ -164,6 +170,9 @@ public class MovieListFragment extends Fragment implements FetchMovieTask.Callba
                 item.setChecked(true);
                 fetchMovies(mSortBy);
                 break;
+            case R.id.action_search:
+                openSearch();
+                break;
             default:
                 break;
         }
@@ -202,6 +211,14 @@ public class MovieListFragment extends Fragment implements FetchMovieTask.Callba
         Intent intent = new Intent(getActivity(), DetailActivity.class);
         intent.putExtra(DetailFragment.ARG_MOVIE, movie);
         startActivity(intent);
+    }
+
+    private void openSearch(){
+        SearchMovieFragment fragment = new SearchMovieFragment();
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.movie_search_container, fragment, SearchMovieFragment.SearchMovieFragmentTag);
+        transaction.addToBackStack(SearchMovieFragment.SearchMovieFragmentTag);
+        transaction.commitAllowingStateLoss();
     }
 
     @Override

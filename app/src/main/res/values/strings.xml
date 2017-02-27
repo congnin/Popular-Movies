@@ -5,7 +5,7 @@
     <string name="url_for_downloading_backdrop">http://image.tmdb.org/t/p/original</string>
 
     <string name="movie_item_btn_favorite_desc">Save to favorites</string>
-    <string name="title_movie_list">Popular Movies</string>
+    <string name="title_movie_list">DB Movie</string>
     <string name="title_movie_detail">Movie Detail</string>
     <string name="user_rating_movie">TMDb: %1$s/10</string>
     <string name="most_popular">Most popular</string>
@@ -21,4 +21,5 @@
     <string name="text_for_empty_view_favorites">You can add here your favorite movies</string>
     <string name="sort_by">Sort by</string>
     <string name="share_trailer">Share trailer</string>
+    <string name="action_search">Search movie</string>
 </resources>

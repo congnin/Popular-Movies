@@ -22,4 +22,7 @@ public interface ApiEndpointInterface {
 
     @GET("3/movie/{id}/reviews")
     Call<Reviews> findReviewsById(@Path("id") long movieId, @Query("api_key") String apiKey);
+
+    @GET("3/search/movie")
+    Call<Movies> getMoviesBySearch(@Query("api_key") String apiKey, @Query("query") String query, @Query("page") long page);
 }

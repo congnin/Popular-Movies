@@ -3,6 +3,7 @@ package com.blablaing.android.popular_movies;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.support.v4.content.ContextCompat;
 
 import com.blablaing.android.popular_movies.data.MovieContract;
 import com.blablaing.android.popular_movies.model.Movie;
@@ -14,6 +15,18 @@ import java.util.List;
  */
 
 public class Utility {
+
+    public static int getColor(Context context, int color) {
+        return ContextCompat.getColor(context, color);
+    }
+
+    public static float dip2px(Context context, float dpValue) {
+        if (context != null) {
+            float scale = context.getResources().getDisplayMetrics().density;
+            return dpValue * scale;
+        }
+        return 0;
+    }
 
     public static int changeAdultToInt(Boolean adult) {
         if (adult)

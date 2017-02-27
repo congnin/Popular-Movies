@@ -1,15 +1,19 @@
 package com.blablaing.android.popular_movies.sync;
 
+import android.database.Observable;
 import android.os.AsyncTask;
 import android.support.annotation.StringDef;
 import android.util.Log;
 
 import com.blablaing.android.popular_movies.BuildConfig;
 import com.blablaing.android.popular_movies.R;
+import com.blablaing.android.popular_movies.model.DiscoverAndSearchResponse;
 import com.blablaing.android.popular_movies.model.Movie;
 import com.blablaing.android.popular_movies.model.Movies;
 import com.blablaing.android.popular_movies.network.ApiEndpointInterface;
 import com.blablaing.android.popular_movies.network.Command;
+import com.blablaing.android.popular_movies.network.RetrofitClient;
+import com.blablaing.android.popular_movies.network.TheMovieDbService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -100,6 +104,4 @@ public class FetchMovieTask extends AsyncTask<String, Void, List<Movie>> {
 
         void onFetchError(Command command);
     }
-
-
 }
