@@ -26,11 +26,18 @@
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview_movie"
+        <com.blablaing.android.popular_movies.ui.RecyclerView.RecyclerRefreshLayout
+            android:id="@+id/refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <com.blablaing.android.popular_movies.ui.RecycleViewLoadMore
+                android:id="@+id/recyclerview_movie"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                 />
+        </com.blablaing.android.popular_movies.ui.RecyclerView.RecyclerRefreshLayout>
 
         <include layout="@layout/empty_state_connection" />
 

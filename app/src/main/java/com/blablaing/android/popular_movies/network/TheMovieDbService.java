@@ -4,6 +4,8 @@ import android.database.Observable;
 
 import com.blablaing.android.popular_movies.model.DiscoverAndSearchResponse;
 import com.blablaing.android.popular_movies.model.Movie;
+import com.blablaing.android.popular_movies.model.Movies;
+import com.blablaing.android.popular_movies.model.MoviesResponse;
 import com.blablaing.android.popular_movies.model.Reviews;
 import com.blablaing.android.popular_movies.model.Trailers;
 
@@ -24,10 +26,13 @@ public interface TheMovieDbService {
     Call<Reviews> getMovieReviews(@Path("id") long movieId);
 
     @GET("discover/movie")
-    Call<DiscoverAndSearchResponse<Movie>> discoverMovies(@Query("sort_by") String sortBy,
-                                                                @Query("page") Integer page);
+    Call<MoviesResponse> discoverMovies(@Query("sort_by") String sortBy,
+                                        @Query("page") Integer page);
 
     @GET("search/movie")
     Call<DiscoverAndSearchResponse<Movie>> searchMovies(@Query("query") String query,
-                                                              @Query("page") Integer page);
+                                                        @Query("page") Integer page);
+
+    @GET("movie/{sort_by}")
+    Call<MoviesResponse> getMoviesBySort(@Path("sort_by") String sortBy, @Query("page") Integer page);
 }

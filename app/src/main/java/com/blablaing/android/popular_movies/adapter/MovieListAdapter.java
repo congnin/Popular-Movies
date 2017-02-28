@@ -13,6 +13,7 @@ import com.blablaing.android.popular_movies.R;
 import com.blablaing.android.popular_movies.data.MovieContract;
 import com.blablaing.android.popular_movies.model.Movie;
 import com.blablaing.android.popular_movies.ui.AspectLockedImageView;
+import com.blablaing.android.popular_movies.ui.RecyclerView.RefreshView;
 import com.github.florent37.picassopalette.PicassoPalette;
 import com.squareup.picasso.Picasso;
 
@@ -23,9 +24,11 @@ import java.util.List;
  * Created by congnc on 2/21/17.
  */
 
-public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.ViewHolder> {
+public class MovieListAdapter extends RecyclerView.Adapter {
     @SuppressWarnings("unused")
     private final static String LOG_TAG = MovieListAdapter.class.getSimpleName();
+    private final static int VIEW_ITEM = 0;
+    private final static int VIEW_PROG = 1;
     public static final float POSTER_ASPECT_RATIO = 1.8f;
 
     private final ArrayList<Movie> mMovies;
@@ -41,47 +44,58 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_movie, parent, false);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder vh;
+        if (viewType == VIEW_ITEM) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_movie, parent, false);
 
-        final Context context = view.getContext();
+            final Context context = view.getContext();
 
-        int gridColsNumber = context.getResources()
-                .getInteger(R.integer.grid_number_cols);
+            int gridColsNumber = context.getResources()
+                    .getInteger(R.integer.grid_number_cols);
 
-        view.getLayoutParams().height = (int) (parent.getWidth() / gridColsNumber *
-                POSTER_ASPECT_RATIO);
-        return new ViewHolder(view);
+            view.getLayoutParams().height = (int) (parent.getWidth() / gridColsNumber *
+                    POSTER_ASPECT_RATIO);
+            vh = new MovieListAdapter.ViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_progressbar, parent, false);
+            vh = new ProgressViewHolder(view);
+        }
+
+        return vh;
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final Movie movie = mMovies.get(position);
-        final Context context = holder.mView.getContext();
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+        if (holder instanceof ViewHolder) {
+            final Movie movie = mMovies.get(position);
+            final Context context = ((ViewHolder) holder).mView.getContext();
 
-        holder.mMovie = movie;
-        holder.mTitleView.setText(movie.getTitle());
+            ((ViewHolder) holder).mTitleView.setText(movie.getTitle());
 
-        String posterUrl = movie.getPosterUrl(context);
+            String posterUrl = movie.getPosterUrl(context);
 
-        Picasso.with(context)
-                .load(posterUrl)
-                .config(Bitmap.Config.RGB_565)
-                .into(holder.mThumbnailView,
-                        PicassoPalette.with(posterUrl, holder.mThumbnailView)
-                                .use(PicassoPalette.Profile.VIBRANT)
-                                .intoBackground(holder.mFooter,
-                                        PicassoPalette.Swatch.RGB)
-                                .intoTextColor(holder.mTitleView,
-                                        PicassoPalette.Swatch.TITLE_TEXT_COLOR));
+            Picasso.with(context)
+                    .load(posterUrl)
+                    .config(Bitmap.Config.RGB_565)
+                    .into(((ViewHolder) holder).mThumbnailView,
+                            PicassoPalette.with(posterUrl, ((ViewHolder) holder).mThumbnailView)
+                                    .use(PicassoPalette.Profile.VIBRANT)
+                                    .intoBackground(((ViewHolder) holder).mFooter,
+                                            PicassoPalette.Swatch.RGB)
+                                    .intoTextColor(((ViewHolder) holder).mTitleView,
+                                            PicassoPalette.Swatch.TITLE_TEXT_COLOR));
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCallbacks.open(movie, holder.getAdapterPosition());
-            }
-        });
+            ((ViewHolder) holder).mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mCallbacks.open(movie, ((ViewHolder) holder).getAdapterPosition());
+                }
+            });
+        }
+
     }
 
     @Override
@@ -89,14 +103,18 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
         return mMovies.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    public int getItemViewType(int position) {
+        return mMovies.get(position) != null ? VIEW_ITEM : VIEW_PROG;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
 
         public final AspectLockedImageView mThumbnailView;
         public final View mItemView;
         public final View mFooter;
         public final TextView mTitleView;
-        public Movie mMovie;
 
         public ViewHolder(View view) {
             super(view);
@@ -113,6 +131,15 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
             mThumbnailView.setImageBitmap(null);
             mThumbnailView.setVisibility(View.INVISIBLE);
             mTitleView.setVisibility(View.GONE);
+        }
+    }
+
+    public static class ProgressViewHolder extends RecyclerView.ViewHolder {
+        RefreshView progressBar;
+
+        public ProgressViewHolder(View v) {
+            super(v);
+            progressBar = (RefreshView) v.findViewById(R.id.progressbar_loading);
         }
     }
 
@@ -135,10 +162,10 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     }
 
     public void add(List<Movie> movies) {
-        mMovies.clear();
-        mMovies.addAll(movies);
+        mMovies.clear();mMovies.addAll(movies);
         notifyDataSetChanged();
     }
+
 
     public ArrayList<Movie> getMovies() {
         return mMovies;
